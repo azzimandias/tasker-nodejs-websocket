@@ -13,9 +13,12 @@ app.use(cors());
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:8080",
-        methods: ["GET", "POST"]
-    }
+        origin: ["http://taskerlaravelapi.ru", "http://localhost:8080"],
+        methods: ["GET", "POST"],
+        credentials: true
+    },
+    transports: ['websocket', 'polling'],
+    allowEIO3: true
 });
 
 io.on('connection', (socket) => {
