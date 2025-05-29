@@ -34,29 +34,32 @@ io.on('connection', (socket) => {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Подписка на комнату конкретного списка
+
     socket.on('subscribeToList', (listId) => {
         socket.join(`list_${listId}`);
         console.log(`User ${socket.id} subscribed to list ${listId}`);
     });
-    // Отписка от комнаты
+
     socket.on('unsubscribeFromList', (listId) => {
         socket.leave(`list_${listId}`);
     });
 });
 
-// Эндпоинт для обновлений от Laravel
-app.post('/api/task-updates', (req, res) => {
-    const { action, listId, task, taskId } = req.body;
 
-    if (action === 'update') {
+app.post('/api/updates-on-list', (req, res) => {
+    const { action, listId, list, task, taskId } = req.body;
+
+    if (action === 'update_task') {
         io.to(`list_${listId}`).emit('taskUpdated', task);
     }
-    else if (action === 'create') {
+    else if (action === 'create_task') {
         io.to(`list_${listId}`).emit('taskCreated', task);
     }
-    else if (action === 'delete') {
+    else if (action === 'delete_task') {
         io.to(`list_${listId}`).emit('taskDeleted', taskId);
+    }
+    else if (action === 'update_list') {
+        io.to(`list_${listId}`).emit('listUpdated', list);
     }
 
     res.json({ status: 'ok' });
