@@ -53,7 +53,7 @@ app.post('/api/task-updates', (req, res) => {
         io.to(`list_${listId}`).emit('taskUpdated', task);
     }
     else if (action === 'create') {
-        io.to(`list_${listId}`).emit('taskCreate', taskId);
+        io.to(`list_${listId}`).emit('taskCreated', task);
     }
     else if (action === 'delete') {
         io.to(`list_${listId}`).emit('taskDeleted', taskId);
