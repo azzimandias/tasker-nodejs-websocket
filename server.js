@@ -29,7 +29,9 @@ if (isProduction) {
 const allowedOrigins = isProduction
     ? [
         "https://sockettasker.taskerlaravelapi.ru",
-        "https://taskerlaravelapi.ru"
+        "https://taskerlaravelapi.ru",
+        "https://spa.taskerlaravelapi.ru",
+        "https://api.taskerlaravelapi.ru",
     ]
     : [
         "http://localhost:8080",
