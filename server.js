@@ -72,6 +72,10 @@ io.on('connection', (socket) => {
     socket.on('unsubscribeFromList', (listId) => {
         socket.leave(`list_${listId}`);
     });
+
+    socket.on("connect_error", (err) => {
+        console.log(err.message, err.description, err.context);
+    });
 });
 
 // API Routes
