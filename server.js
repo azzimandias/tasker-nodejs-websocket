@@ -117,6 +117,10 @@ apiRoutes.forEach(route => {
     });
 });
 
+app.get('/', (req, res) => {
+    res.send('Hello from Express!');
+});
+
 httpServer.listen(PORT, () => {
     console.log(`Socket.io server running in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} mode on port ${PORT}`);
     console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
