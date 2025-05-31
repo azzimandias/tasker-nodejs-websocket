@@ -40,9 +40,10 @@ const io = new Server(httpServer, {
     cors: {
         origin: allowedOrigins,
         methods: ["GET", "POST"],
-        credentials: true
+        credentials: true,
     },
-    transports: ['websocket', 'polling']
+    transports: ['websocket', 'polling'],
+    allowEIO3: true
 });
 
 io.on('connection', (socket) => {
