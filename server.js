@@ -18,8 +18,8 @@ const PORT = process.env.PORT;
 let httpServer;
 if (isProduction) {
     const sslOptions = {
-        key: fs.readFileSync('/path/to/privkey.pem'),
-        cert: fs.readFileSync('/path/to/fullchain.pem')
+        key: fs.readFileSync(process.env.KEY),
+        cert: fs.readFileSync(process.env.CERT)
     };
     httpServer = https.createServer(sslOptions, app);
 } else {
@@ -53,9 +53,9 @@ io.on('connection', (socket) => {
         console.log(`User ${socket.id} joined room ${room}`);
     });
 
-    socket.on('sendMessage', (data) => {
+/*    socket.on('sendMessage', (data) => {
         io.to(data.room).emit('newMessage', data.message);
-    });
+    });*/
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
@@ -76,8 +76,7 @@ const apiRoutes = [
     '/api/updates-on-list',
     '/api/send-new-sort-lists-count',
     '/api/send-new-personal-lists-count',
-    '/api/send-new-personal-tags',
-    '/api/send-new-personal-list'
+    '/api/send-new-personal-tags'
 ];
 
 apiRoutes.forEach(route => {
@@ -101,6 +100,9 @@ apiRoutes.forEach(route => {
                     return res.status(400).json({ error: 'Invalid request data' });
                 }
                 const eventName = route.split('/').pop().replace(/-/g, '_');
+                console.log("room: " + room)
+                console.log("eventName: " + eventName)
+                console.log(message)
                 io.to(room).emit(eventName, message);
             }
 
