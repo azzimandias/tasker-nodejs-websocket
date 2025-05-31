@@ -89,18 +89,18 @@ const apiRoutes = [
 apiRoutes.forEach(route => {
     app.post(route, (req, res) => {
         try {
-            const { action, listId, list, task, taskId, room, message } = req.body;
+            const { action, listId, list, task, taskId, room, message, uuid } = req.body;
 
             // Route-specific logic
             if (route === '/api/updates-on-list') {
                 if (action === 'update_task') {
-                    io.to(`list_${listId}`).emit('taskUpdated', task);
+                    io.to(`list_${listId}`).emit('taskUpdated', {task, uuid});
                 } else if (action === 'create_task') {
-                    io.to(`list_${listId}`).emit('taskCreated', task);
+                    io.to(`list_${listId}`).emit('taskCreated', {task, uuid});
                 } else if (action === 'delete_task') {
-                    io.to(`list_${listId}`).emit('taskDeleted', taskId);
+                    io.to(`list_${listId}`).emit('taskDeleted', {taskId, uuid});
                 } else if (action === 'update_list') {
-                    io.to(`list_${listId}`).emit('listUpdated', list);
+                    io.to(`list_${listId}`).emit('listUpdated', {list, uuid});
                 }
             } else {
                 if (!room || !message) {
@@ -110,7 +110,7 @@ apiRoutes.forEach(route => {
                 console.log("room: " + room)
                 console.log("eventName: " + eventName)
                 console.log(message)
-                io.to(room).emit(eventName, message);
+                io.to(room).emit(eventName, {message, uuid});
             }
 
             res.json({ status: 'ok' });
