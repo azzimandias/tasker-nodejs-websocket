@@ -56,10 +56,6 @@ io.on('connection', (socket) => {
         console.log(`User ${socket.id} joined room ${room}`);
     });
 
-/*    socket.on('sendMessage', (data) => {
-        io.to(data.room).emit('newMessage', data.message);
-    });*/
-
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
     });
@@ -89,27 +85,35 @@ const apiRoutes = [
 apiRoutes.forEach(route => {
     app.post(route, (req, res) => {
         try {
-            const { action, listId, list, task, taskId, room, message, uuid } = req.body;
+            const { action, listId, list, task, taskId, tag, room, message, uuid } = req.body;
 
             // Route-specific logic
             if (route === '/api/updates-on-list') {
                 if (action === 'update_task') {
-                    io.to(`list_${listId}`).emit('taskUpdated', {task, uuid});
+                    io.to(room).emit('taskUpdated', {task, uuid});
                 } else if (action === 'create_task') {
-                    io.to(`list_${listId}`).emit('taskCreated', {task, uuid});
+                    io.to(room).emit('taskCreated', {task, uuid});
                 } else if (action === 'delete_task') {
-                    io.to(`list_${listId}`).emit('taskDeleted', {taskId, uuid});
+                    io.to(room).emit('taskDeleted', {taskId, uuid});
                 } else if (action === 'update_list') {
-                    io.to(`list_${listId}`).emit('listUpdated', {list, uuid});
+                    io.to(room).emit('listUpdated', {list, uuid});
+                } else if (action === 'create_tag_task') {
+                    io.to(room).emit('createdTagTask', {tag, taskId, uuid});
+                } else if (action === 'add_tag_task') {
+                    io.to(room).emit('addTagTask', {tag, taskId, uuid});
+                } else if (action === 'delete_tag_task') {
+                    io.to(room).emit('deleteTagTask', {tag, taskId, uuid});
+                } else if (action === 'update_tag') {
+                    io.to(room).emit('updateTag', {tag, taskId, uuid});
                 }
             } else {
                 if (!room || !message) {
                     return res.status(400).json({ error: 'Invalid request data' });
                 }
                 const eventName = route.split('/').pop().replace(/-/g, '_');
-                console.log("room: " + room)
-                console.log("eventName: " + eventName)
-                console.log(message)
+                //console.log("room: " + room)
+                //console.log("eventName: " + eventName)
+                //console.log(message)
                 io.to(room).emit(eventName, {message, uuid});
             }
 
