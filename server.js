@@ -103,6 +103,8 @@ apiRoutes.forEach(route => {
                     io.to(room).emit('addTagTask', {tag, taskId, uuid});
                 } else if (action === 'delete_tag_task') {
                     io.to(room).emit('deleteTagTask', {tag, taskId, uuid});
+                } else if (action === 'delete_tag') {
+                    io.to(room).emit('deleteTag', {tag, uuid});
                 } else if (action === 'update_tag') {
                     io.to(room).emit('updateTag', {tag, taskId, uuid});
                 }
